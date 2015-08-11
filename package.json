@@ -1,0 +1,38 @@
+{
+  "name": "angular-referential-data-service",
+  "version": "0.0.1",
+  "description": "AngularJS Service for loading referential data via a webservice",
+  "main": "referential-data-service.js",
+  "scripts": {
+    "test": "gulp test:unit",
+    "postinstall": "jspm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/StrictlyBusiness/angular-referential-service.git"
+  },
+  "author": "Jason Stadler and Bill Rawlinson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/StrictlyBusiness/angular-referential-service/issues"
+  },
+  "homepage": "https://github.com/StrictlyBusiness/angular-referential-service",
+  "devDependencies": {
+    "eslint": "1.1.0",
+    "gulp": "3.9.0",
+    "jspm": "0.15.7",
+    "karma": "0.13.8"
+  },
+  "jspm": {
+    "directories": {},
+    "dependencies": {
+      "bluebird": "npm:bluebird@2.9.34",
+      "lodash": "npm:lodash@3.10.1"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.1.13",
+      "babel-runtime": "npm:babel-runtime@^5.1.13",
+      "core-js": "npm:core-js@^0.9.4"
+    }
+  }
+}
