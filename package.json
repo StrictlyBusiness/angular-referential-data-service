@@ -29,12 +29,15 @@
     "karma-chrome-launcher": "0.2.0",
     "karma-jspm": "1.1.5",
     "karma-mocha": "0.2.0",
+    "karma-mocha-reporter": "1.1.1",
     "karma-sinon-chai": "1.0.0",
     "mocha": "2.2.5"
   },
   "jspm": {
     "directories": {},
     "dependencies": {
+      "angular": "npm:angular@^1.4.3",
+      "angular-cache-service": "github:StrictlyBusiness/angular-cache-service@0.0.1",
       "bluebird": "npm:bluebird@2.9.34",
       "lodash": "npm:lodash@3.10.1"
     },

@@ -1,10 +1,7 @@
-﻿import 'angular';
-import _ from 'lodash';
-
 import ReferentialDataService, { Plan, PlanStep } from './referential-data-service';
-import CacheService from './cache/cache-service';
-import Class from '../models/class';
-import Site from '../models/site';
+import CacheService from 'angular-cache-service';
+import Class from './test-models/class';
+import Site from './test-models/site';
 
 function getPlanStep(entity, service, paths, depth) {
   let planStep = new PlanStep(entity, service);
@@ -125,6 +122,5 @@ describe('ReferentialDataService', function() {
     });
 
   });
-
 
 });
