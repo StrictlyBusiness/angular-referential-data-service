@@ -10,15 +10,9 @@
 //=============================================
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
-var del = require('del');
-var path = require('path');
-var browserSync = require('browser-sync');
-var runSequence = require('run-sequence');
 var karma = require('karma').server;
-var moment = require('moment');
-var pkg = require('./package.json');
-var guppy = require('git-guppy')(gulp);
-var debug = require('gulp-debug');
+var path = require('path');
+
 //=============================================
 //                CONSTANTS
 //=============================================
@@ -36,14 +30,13 @@ var PRODUCTION_CDN_URL = 'http://your-production-cdn-url.com';
  * Declare variables that are use in gulpfile.js or angular app
  */
 var log = plugins.util.log;
-var argv = plugins.util.env;
-var ENV = !!argv.env ? argv.env : 'dev';
+var ENV =  'dev';
 var COLORS = plugins.util.colors;
-var WATCH = !!argv.watch ? argv.watch : false;
-var BROWSERS = !!argv.browsers ? argv.browsers : 'Chrome';
-var REPORTERS = !!argv.reporters ? argv.reporters : 'mocha';
-var CDN_BASE = !!argv.cdn ? PRODUCTION_CDN_URL : DEVELOPMENT_URL;
-var APPLICATION_BASE_URL = ENV ? PRODUCTION_URL : DEVELOPMENT_URL;
+var WATCH =  false;
+var BROWSERS = 'Chrome';
+var REPORTERS = 'mocha';
+var CDN_BASE =  DEVELOPMENT_URL;
+var APPLICATION_BASE_URL =  DEVELOPMENT_URL;
 
 
 //=============================================
@@ -70,24 +63,6 @@ var paths = {
    */
   app: {
     basePath: 'src/',
-    fonts: [
-      'src/fonts/**/*.{eot,svg,ttf,woff,woff2}',
-      'jspm_packages/**/*.{eot,svg,ttf,woff,woff2}'
-    ],
-    styles: {
-      scss: 'src/styles/**/*.scss',
-      main: 'src/styles/main.scss',
-      concat: [
-        'jspm_packages/github/alexcrack/angular-ui-notification@0.0.11/dist/angular-ui-notification.min.css',
-        'jspm_packages/github/angular-ui/ui-select@0.12.0/dist/select.min.css',
-      ],
-      include: [
-        'src/styles/',
-        'jspm_packages/github/twbs/bootstrap-sass@3.3.4/assets/stylesheets/',
-        'jspm_packages/github/fortawesome/font-awesome@4.3.0/scss/'
-      ]
-    },
-    images: 'src/images/**/*.{png,gif,jpg,jpeg}',
     config: {
       dev: 'src/app/core/config/core.config.dev.js',
       test: 'src/app/core/config/core.config.test.js',
@@ -97,8 +72,6 @@ var paths = {
       'src/app/**/*.js',
       '!src/app/**/*.test.js'
     ],
-    html: 'src/index.html',
-    templates: 'src/app/**/*.html'
   },
   /**
    * This is a collection of file patterns that refer to our app unit and e2e tests code.
@@ -113,8 +86,8 @@ var paths = {
     config: {
       karma: 'karma.conf.js',
     },
-    mock: 'src/app/**/*.mock.js',
-    unit: 'src/app/**/*.test.js',
+    mock: '*.mock.js',
+    unit: '*.test.js',
   },
   /**
    * The 'tmp' folder is where our html templates are compiled to JavaScript during
@@ -148,65 +121,6 @@ var paths = {
 };
 
 
-//=============================================
-//            PRINT INFO MESSAGE
-//=============================================
-log(COLORS.blue('********** RUNNING IN ' + ENV + ' ENVIROMENT **********'));
-
-
-//=============================================
-//            UTILS FUNCTIONS
-//=============================================
-
-function formatPercent(num, precision) {
-  return (num * 100).toFixed(precision);
-}
-
-function bytediffFormatter(data) {
-  var difference = (data.savings > 0) ? ' smaller.' : ' larger.';
-  return COLORS.yellow(data.fileName + ' went from ' +
-    (data.startSize / 1000).toFixed(2) + ' kB to ' + (data.endSize / 1000).toFixed(2) + ' kB' +
-    ' and is ' + formatPercent(1 - data.percent, 2) + '%' + difference);
-}
-
-//=============================================
-//            DECLARE BANNER DETAILS
-//=============================================
-
-/**
- * The banner is the comment that is placed at the top of our compiled
- * source files. It is first processed as a Gulp template, where the `<%=`
- * pairs are evaluated based on this very configuration object.
- */
-var banner = plugins.util.template(
-  '/**\n' +
-  ' * <%= pkg.description %>\n' +
-  ' * @version v<%= pkg.version %> - <%= today %>\n' +
-  ' * @author <%= pkg.author.name %> (<%= pkg.author.url %>)\n' +
-  ' * @copyright <%= year %>(c) <%= pkg.author.name %>\n' +
-  //' * @license <%= pkg.license.type %>, <%= pkg.license.url %>\n' +
-  ' */\n', {
-    file: '',
-    pkg: pkg,
-    today: moment(new Date()).format('D/MM/YYYY'),
-    year: new Date().toISOString().substr(0, 4)
-  });
-
-
-//=============================================
-//               SUB TASKS
-//=============================================
-
-/**
- * The 'clean' task delete 'build' and '.tmp' directories.
- */
-gulp.task('clean', function(cb) {
-  var files = [].concat(paths.build.basePath, paths.tmp.basePath);
-  log('Cleaning: ' + COLORS.blue(files));
-
-  return del(files, cb);
-});
-
 /**
  * The 'eslint' task defines the rules of our hinter as well as which files
  * we should check. It helps to detect errors and potential problems in our
@@ -218,202 +132,6 @@ gulp.task('eslint', function() {
     .pipe(plugins.eslint.formatEach())
     .pipe(plugins.eslint.failAfterError());
 });
-
-/**
- * The 'htmlhint' task defines the rules of our hinter as well as which files we
- * should check. It helps to detect errors and potential problems in our
- * HTML code.
- */
-gulp.task('htmlhint', function() {
-  return gulp.src([paths.app.html, paths.app.templates])
-    .pipe(plugins.htmlhint('.htmlhintrc'))
-    .pipe(plugins.htmlhint.reporter())
-    .pipe(plugins.htmlhint.failReporter());
-});
-
-/**
- * Performs all lint checking operations
- */
-gulp.task('lint', ['eslint', 'htmlhint']);
-
-/**
- * Build and copy all styles
- */
-gulp.task('styles', ['sass'], function() {
-  return gulp.src(paths.app.styles.concat)
-    .pipe(plugins.autoprefixer({
-      browsers: ['last 2 versions']
-    }))
-    .on('error', plugins.util.log)
-    .pipe(gulp.dest(paths.tmp.styles))
-    .on('error', plugins.util.log);
-});
-
-/**
- * Compile SASS files into the main.css.
- */
-gulp.task('sass', function() {
-  return gulp.src(paths.app.styles.main)
-    .pipe(plugins.sourcemaps.init())
-    .pipe(plugins.sass({
-      includePaths: paths.app.styles.include,
-      errLogToConsole: true
-    }))
-    .pipe(plugins.sourcemaps.write({
-      includeContent: false
-    }))
-    .pipe(plugins.sourcemaps.init({
-      loadMaps: true
-    })) // Load sourcemaps generated by sass
-    .pipe(plugins.autoprefixer({
-      browsers: ['last 2 versions']
-    }))
-    .on('error', plugins.util.log)
-    .pipe(plugins.sourcemaps.write('.'))
-    .pipe(gulp.dest(paths.tmp.styles))
-    .on('error', plugins.util.log);
-});
-
-/**
- * The 'fonts' task copies fonts to `build/dist` directory.
- */
-gulp.task('fonts', function() {
-  return gulp.src(paths.app.fonts)
-    .pipe(plugins.filter('**/*.{eot,svg,ttf,woff,woff2}'))
-    .pipe(plugins.flatten())
-    .pipe(gulp.dest(paths.tmp.fonts))
-    .pipe(gulp.dest(paths.build.dist.fonts))
-    .pipe(plugins.size({
-      title: 'fonts'
-    }));
-});
-
-/**
- * The 'images' task minifies and copies images to `build/dist` directory.
- */
-gulp.task('images', function() {
-  return gulp.src(paths.app.images)
-    .pipe(plugins.imagemin({
-      progressive: true,
-      interlaced: true
-    }))
-    .pipe(gulp.dest(paths.build.dist.images))
-    .pipe(plugins.size({
-      title: 'images'
-    }));
-});
-
-
-/**
- * Create JS production bundle.
- */
-gulp.task('bundle', ['lint'], plugins.shell.task([
-  'jspm bundle-sfx src/app/app-bootstrap ' + paths.tmp.scripts + 'build.js'
-]));
-
-/**
- * The 'compile' task compile all js, css and html files.
- *
- * 1. it compiles and minify html templates to js template cache
- * 2. css      - replace local path with CDN url, minify, add revision number, add banner header
- *    css_libs - minify, add revision number
- *    js       - annotates the sources before minifying, minify, add revision number, add banner header
- *    js_libs  - minify, add revision number
- *    html     - replace local path with CDN url, minify
- */
-gulp.task('compile', ['htmlhint', 'styles', 'bundle'], function() {
-  var projectHeader = plugins.header(banner);
-
-  return gulp.src(paths.app.html)
-    .pipe(plugins.inject(gulp.src(paths.tmp.scripts + 'build.js', {
-      read: false
-    }), {
-      starttag: '<!-- inject:build:js -->',
-      ignorePath: [paths.app.basePath]
-    }))
-    .pipe(plugins.usemin({
-      css: [
-        //plugins.if(!!argv.cdn, plugins.cdnizer({defaultCDNBase: CDN_BASE, relativeRoot: 'styles', files: ['**/*.{gif,png,jpg,jpeg}']})),
-        plugins.bytediff.start(),
-        plugins.minifyCss({
-          keepSpecialComments: 0,
-          rebase: false
-        }),
-        plugins.bytediff.stop(bytediffFormatter),
-        plugins.rev(),
-        projectHeader
-      ],
-      js: [
-        //plugins.if(!!argv.cdn, plugins.cdnizer({defaultCDNBase: CDN_BASE, relativeRoot: '/', files: ['**/*.{gif,png,jpg,jpeg}']})),
-        plugins.bytediff.start(),
-        plugins.uglify(),
-        plugins.bytediff.stop(bytediffFormatter),
-        plugins.rev(),
-        projectHeader
-      ],
-      html: [
-        //plugins.if(!!argv.cdn, plugins.cdnizer({defaultCDNBase: CDN_BASE, files: ['**/*.{js,css}']})),
-        plugins.bytediff.start(),
-        plugins.minifyHtml({
-          empty: true
-        }),
-        plugins.bytediff.stop(bytediffFormatter)
-      ]
-    }))
-    .pipe(gulp.dest(paths.build.dist.basePath))
-    .pipe(plugins.size({
-      title: 'compile',
-      showFiles: true
-    }));
-});
-
-/**
- * The 'watch' task set up the checks to see if any of the files listed below
- * change, and then to execute the listed tasks when they do.
- */
-gulp.task('watch', function() {
-  // Watch images and fonts files
-  gulp.watch([paths.app.images, paths.app.fonts], [browserSync.reload]);
-
-  // Watch css files
-  gulp.watch(paths.app.styles.scss, ['styles']);
-
-  // Watch js files
-  gulp.watch([paths.app.scripts, paths.gulpfile], ['lint', browserSync.reload]);
-
-  // Watch html files
-  gulp.watch([paths.app.html, paths.app.templates], ['htmlhint', browserSync.reload]);
-});
-
-
-//---------------------------------------------
-//            DEVELOPMENT TASKS
-//---------------------------------------------
-
-
-/**
- * The 'serve' task serve the dev environment.
- */
-gulp.task('serve', ['styles', 'watch'], function() {
-  return browserSync.init([
-    paths.tmp.styles,
-    paths.app.scripts,
-    paths.app.html,
-    paths.app.templates
-  ], {
-    notify: false,
-    port: 3500,
-    browser: [],
-    tunnel: false,
-    proxy: 'http://localhost:9000'
-  });
-
-});
-
-/**
- * The 'default' task serve the dev environment.
- */
-gulp.task('default', ['serve']);
 
 
 //---------------------------------------------
@@ -440,25 +158,3 @@ gulp.task('test:unit', function(cb) {
     cb();
   });
 });
-
-
-
-//---------------------------------------------
-//               BUILD TASKS
-//---------------------------------------------
-
-/**
- * The 'build' task gets app ready for deployment by processing files
- * and put them into directory ready for production.
- *
- *  'env=<environment>': 'environment flag (prod|dev|test)',
- *  'cdn': 'replace local path with CDN url'
- */
-gulp.task('build', function(cb) {
-  runSequence(
-    ['clean'], ['compile', 'images', 'fonts'],
-    cb
-  );
-});
-
-gulp.task('pre-commit', ['lint']);

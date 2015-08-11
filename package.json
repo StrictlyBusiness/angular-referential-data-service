@@ -18,10 +18,19 @@
   },
   "homepage": "https://github.com/StrictlyBusiness/angular-referential-service",
   "devDependencies": {
+    "browser-sync": "2.8.2",
+    "del": "1.2.0",
     "eslint": "1.1.0",
     "gulp": "3.9.0",
+    "gulp-load-plugins": "0.10.0",
+    "gulp-util": "^3.0.6",
     "jspm": "0.15.7",
-    "karma": "0.13.8"
+    "karma": "0.13.8",
+    "karma-chrome-launcher": "0.2.0",
+    "karma-jspm": "1.1.5",
+    "karma-mocha": "0.2.0",
+    "karma-sinon-chai": "1.0.0",
+    "mocha": "2.2.5"
   },
   "jspm": {
     "directories": {},
