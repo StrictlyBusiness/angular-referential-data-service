@@ -37,7 +37,7 @@
     "directories": {},
     "dependencies": {
       "angular": "npm:angular@^1.4.3",
-      "angular-cache-service": "github:StrictlyBusiness/angular-cache-service@0.0.1",
+      "angular-cache-service": "github:StrictlyBusiness/angular-cache-service@0.0.2",
       "bluebird": "npm:bluebird@2.9.34",
       "lodash": "npm:lodash@3.10.1"
     },

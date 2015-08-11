@@ -25,7 +25,8 @@ module.exports = function(config) {
             '*.test.js'
         ],
         serveFiles: [ // Non-test Files
-            '!(*.test).js',
+            'test-models/*.js',
+            '*.js',
             '*.html',
             '*.map'
         ]
