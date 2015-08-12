@@ -2,7 +2,7 @@
   "name": "angular-referential-data-service",
   "version": "0.0.1",
   "description": "AngularJS Service for loading referential data via a webservice",
-  "main": "referential-data-service.js",
+  "main": "dist/referential-data-service.js",
   "scripts": {
     "test": "gulp test:unit",
     "postinstall": "jspm install"
