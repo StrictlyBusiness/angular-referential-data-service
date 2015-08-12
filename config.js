@@ -16,16 +16,20 @@ System.config({
 System.config({
   "map": {
     "angular": "npm:angular@1.4.3",
-    "angular-cache-service": "github:StrictlyBusiness/angular-cache-service@0.0.3",
+    "angular-cache-service": "github:StrictlyBusiness/angular-cache-service@0.0.4",
+    "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.3",
     "babel": "npm:babel-core@5.8.22",
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "bluebird": "npm:bluebird@2.9.34",
     "core-js": "npm:core-js@0.9.18",
     "lodash": "npm:lodash@3.10.1",
-    "github:StrictlyBusiness/angular-cache-service@0.0.3": {
+    "github:StrictlyBusiness/angular-cache-service@0.0.4": {
       "babel": "npm:babel-core@5.8.22",
       "bluebird": "npm:bluebird@2.9.34",
       "lodash": "npm:lodash@3.10.1"
+    },
+    "github:angular/bower-angular-sanitize@1.4.3": {
+      "angular": "github:angular/bower-angular@1.4.3"
     },
     "github:jspm/nodelibs-process@0.1.1": {
       "process": "npm:process@0.10.1"

@@ -12,7 +12,7 @@ var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var karma = require('karma').server;
 var path = require('path');
-
+var babel = require("gulp-babel");
 //=============================================
 //            DECLARE VARIABLES
 //=============================================
@@ -22,7 +22,7 @@ var path = require('path');
  */
 var log = plugins.util.log;
 var COLORS = plugins.util.colors;
-var WATCH =  false;
+var WATCH =  true;
 var BROWSERS = 'Chrome';
 var REPORTERS = 'mocha';
 
@@ -78,4 +78,10 @@ gulp.task('test:unit', function(cb) {
     }
     cb();
   });
+});
+
+gulp.task("compile", function () {
+  return gulp.src("*-service.js")
+    .pipe(babel())
+    .pipe(gulp.dest("dist"));
 });

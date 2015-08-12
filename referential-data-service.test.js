@@ -1,10 +1,10 @@
 import ReferentialDataService, { Plan, PlanStep } from './referential-data-service';
 
-/*
+
 import CacheService from 'angular-cache-service';
 import Class from './test-models/class';
 import Site from './test-models/site';
-*/
+
 
 function getPlanStep(entity, service, paths, depth) {
   let planStep = new PlanStep(entity, service);
@@ -20,7 +20,6 @@ let $injector = {
 }
 
 describe('ReferentialDataService', function() {
-
   let referentialDataService = null;
   beforeEach('Inject referentialDataService for test', function() {
     referentialDataService = new ReferentialDataService(null, $injector);
@@ -81,7 +80,6 @@ describe('ReferentialDataService', function() {
 
   });
 
-/* test under construction while I try to figure out the best way to use the cache service here
   describe('.getPropertyValues', function() {
 
     it('should return all grantee ids', function() {
@@ -126,5 +124,5 @@ describe('ReferentialDataService', function() {
     });
 
   });
-*/
+
 });
