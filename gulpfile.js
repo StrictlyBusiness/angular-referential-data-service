@@ -22,7 +22,7 @@ var babel = require("gulp-babel");
  */
 var log = plugins.util.log;
 var COLORS = plugins.util.colors;
-var WATCH =  true;
+var WATCH =  false;
 var BROWSERS = 'Chrome';
 var REPORTERS = 'mocha';
 
