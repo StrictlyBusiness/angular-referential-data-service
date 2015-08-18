@@ -13,9 +13,9 @@ System.config({
   },
 
   map: {
-    "StrictlyBusiness/angular-cache-service": "github:StrictlyBusiness/angular-cache-service@1.0.0",
-    "angular": "github:angular/bower-angular@1.3.15",
-    "angular-sanitize": "github:angular/bower-angular-sanitize@1.3.15",
+    "angular": "github:angular/bower-angular@1.4.4",
+    "angular-cache-service": "github:StrictlyBusiness/angular-cache-service@1.0.0",
+    "angular-sanitize": "github:angular/bower-angular-sanitize@1.4.4",
     "babel": "npm:babel-core@5.8.22",
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "bluebird": "npm:bluebird@2.9.34",
@@ -26,8 +26,8 @@ System.config({
       "bluebird": "npm:bluebird@2.9.34",
       "lodash": "npm:lodash@3.10.1"
     },
-    "github:angular/bower-angular-sanitize@1.3.15": {
-      "angular": "github:angular/bower-angular@1.3.15"
+    "github:angular/bower-angular-sanitize@1.4.4": {
+      "angular": "github:angular/bower-angular@1.4.4"
     },
     "github:jspm/nodelibs-process@0.1.1": {
       "process": "npm:process@0.10.1"
