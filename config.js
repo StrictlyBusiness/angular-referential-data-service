@@ -13,15 +13,15 @@ System.config({
   },
 
   map: {
+    "StrictlyBusiness/angular-cache-service": "github:StrictlyBusiness/angular-cache-service@1.0.0",
     "angular": "github:angular/bower-angular@1.3.15",
-    "angular-cache-service": "github:StrictlyBusiness/angular-cache-service@0.0.4",
     "angular-sanitize": "github:angular/bower-angular-sanitize@1.3.15",
     "babel": "npm:babel-core@5.8.22",
     "babel-runtime": "npm:babel-runtime@5.8.20",
     "bluebird": "npm:bluebird@2.9.34",
     "core-js": "npm:core-js@1.1.0",
     "lodash": "npm:lodash@3.10.1",
-    "github:StrictlyBusiness/angular-cache-service@0.0.4": {
+    "github:StrictlyBusiness/angular-cache-service@1.0.0": {
       "babel": "npm:babel-core@5.8.22",
       "bluebird": "npm:bluebird@2.9.34",
       "lodash": "npm:lodash@3.10.1"
