@@ -1,4 +1,4 @@
-import ReferentialDataService, { Plan, PlanStep } from './referential-data-service';
+import ReferentialDataService, { PlanStep } from './referential-data-service';
 
 
 import CacheService from 'angular-cache-service';
