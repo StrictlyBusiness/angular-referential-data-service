@@ -97,3 +97,5 @@ gulp.task('compile', ['eslint'], function () {
     .pipe(babel())
     .pipe(gulp.dest('dist'));
 });
+
+gulp.task('build', ['compile']);
