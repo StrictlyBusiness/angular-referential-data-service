@@ -7,7 +7,6 @@ module.exports = function(config) {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
 
-
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jspm', 'mocha', 'sinon-chai'],
@@ -27,8 +26,6 @@ module.exports = function(config) {
         serveFiles: [ // Non-test Files
             'test-models/*.js',
             '*.js',
-            '*.html',
-            '*.map'
         ]
     },
 
