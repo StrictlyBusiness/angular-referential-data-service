@@ -52,6 +52,7 @@ describe('ReferentialDataService', function() {
       referentialDataService.registerReference('Grantee', 'administratorId', 'accountService', 'Account');
       referentialDataService.registerReference('Grantee', 'regionId', 'regionService', 'Region');
       referentialDataService.registerReference('Region', 'administratorId', 'accountService', 'Account');
+      referentialDataService.registerReference('Class','classRoomIds', 'classRoomService', 'ClassRooms', 'classRooms');
 
       let plan = referentialDataService.buildQueryPlan('Class', [
         'site',
@@ -59,11 +60,13 @@ describe('ReferentialDataService', function() {
         'site.grantee.administrator',
         'site.grantee.region',
         'site.grantee.region.administrator',
-        'classType'
+        'classType',
+        'classRooms'
       ]);
 
       let expected = {
         steps: [
+          getPlanStep('ClassRooms', { name: 'classRoomService'}, ['classRooms'], 1),
           getPlanStep('ClassType', { name: 'classTypeService' }, [ 'classType' ], 1),
           getPlanStep('Site', { name: 'siteService' }, [ 'site' ], 1),
           getPlanStep('Grantee', { name: 'granteeService' }, [ 'site.grantee' ], 2),
@@ -73,6 +76,7 @@ describe('ReferentialDataService', function() {
               'site.grantee.administrator',
               'site.grantee.region.administrator'
             ], 4)
+
         ]
       };
       expect(plan).to.deep.equal(expected);

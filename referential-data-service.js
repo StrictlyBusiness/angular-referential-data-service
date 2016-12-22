@@ -145,10 +145,20 @@ export class PlanStep {
     if (propertyChain.length === 0) {
       // Get the property value from the key (property with id)
       let value = item[property + 'Id'];
+
+      // may need Ids
+      if (value === null || _.isUndefined(value)){
+        let value = item[property + 'Ids'];
+      }
+
       // Only process values that are defined
       if (value !== null && !_.isUndefined(value)) {
         // Add the value to the found ids
-        ids.push(value);
+        if(Array.isArray(value)){
+          ids.concat(value);
+        } else {
+          ids.push(value);
+        }
       }
     } else {
       // Get the property value from the getter/setter
