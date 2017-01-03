@@ -148,7 +148,13 @@ export class PlanStep {
 
       // may need Ids
       if (value === null || _.isUndefined(value)){
-        value = item[property + 'Ids'];
+        let key = property;
+        // trim off the 's' if necessary.'
+        if(key.charAt(key.length-1) === 's'){
+          key = key.slice(0,-1);
+        }
+        // add Ids since Id didn't work.
+        value = item[key + 'Ids'];
       }
 
       // Only process values that are defined

@@ -188,7 +188,13 @@ var PlanStep = (function () {
 
         // may need Ids
         if (value === null || _lodash2['default'].isUndefined(value)) {
-          value = item[property + 'Ids'];
+          var key = property;
+          // trim off the 's' if necessary.'
+          if (key.charAt(key.length - 1) === 's') {
+            key = key.slice(0, -1);
+          }
+          // add Ids since Id didn't work.
+          value = item[key + 'Ids'];
         }
 
         // Only process values that are defined
