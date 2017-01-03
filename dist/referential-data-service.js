@@ -183,23 +183,27 @@ var PlanStep = (function () {
       // If the propertyChain is empty, we know we are at the place we need to
       // collect the value.
       if (propertyChain.length === 0) {
-        // Get the property value from the key (property with id)
-        var value = item[property + 'Id'];
+        (function () {
+          // Get the property value from the key (property with id)
+          var value = item[property + 'Id'];
 
-        // may need Ids
-        if (value === null || _lodash2['default'].isUndefined(value)) {
-          var _value = item[property + 'Ids'];
-        }
-
-        // Only process values that are defined
-        if (value !== null && !_lodash2['default'].isUndefined(value)) {
-          // Add the value to the found ids
-          if (Array.isArray(value)) {
-            ids.concat(value);
-          } else {
-            ids.push(value);
+          // may need Ids
+          if (value === null || _lodash2['default'].isUndefined(value)) {
+            value = item[property + 'Ids'];
           }
-        }
+
+          // Only process values that are defined
+          if (value !== null && !_lodash2['default'].isUndefined(value)) {
+            // Add the value to the found ids
+            if (Array.isArray(value)) {
+              value.forEach(function (val) {
+                ids.push(value);
+              });
+            } else {
+              ids.push(value);
+            }
+          }
+        })();
       } else {
         // Get the property value from the getter/setter
         var value = item[property];
