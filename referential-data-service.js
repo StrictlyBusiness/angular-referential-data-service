@@ -156,7 +156,7 @@ export class PlanStep {
         // Add the value to the found ids
         if(Array.isArray(value)){
           value.forEach((val)=>{
-            ids.push(value);
+            ids.push(val);
           });
         } else {
           ids.push(value);
