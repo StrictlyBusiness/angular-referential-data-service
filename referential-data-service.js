@@ -148,14 +148,16 @@ export class PlanStep {
 
       // may need Ids
       if (value === null || _.isUndefined(value)){
-        let value = item[property + 'Ids'];
+        value = item[property + 'Ids'];
       }
 
       // Only process values that are defined
       if (value !== null && !_.isUndefined(value)) {
         // Add the value to the found ids
         if(Array.isArray(value)){
-          ids.concat(value);
+          value.forEach((val)=>{
+            ids.push(value);
+          });
         } else {
           ids.push(value);
         }
