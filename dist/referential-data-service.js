@@ -183,19 +183,10 @@ var PlanStep = (function () {
       // If the propertyChain is empty, we know we are at the place we need to
       // collect the value.
       if (propertyChain.length === 0) {
-        // Get the property value from the key (property with id)
-        var value = item[property + 'Id'];
-
-        // may need Ids
-        if (value === null || _lodash2['default'].isUndefined(value)) {
-          var key = property;
-          // trim off the 's' if necessary.'
-          if (key.charAt(key.length - 1) === 's') {
-            key = key.slice(0, -1);
-          }
-          // add Ids since Id didn't work.
-          value = item[key + 'Ids'];
-        }
+        // Get the key from the lookup table
+        var key = item._rdsReferences[property];
+        // attempt to get the corresponding value
+        var value = item[key];
 
         // Only process values that are defined
         if (value !== null && !_lodash2['default'].isUndefined(value)) {
@@ -255,11 +246,20 @@ var ReferentialDataService = (function () {
   // Registers a foreign get reference. This information is used to create
   // getters and setters on model entities to reference related objects. It is
   // also used to load the referential data as well. To register a reference,
-  // call this method with the type name (class name), the name of the property
-  // that holds the key reference, the related service name, and the
-  // referenced type. The last argument is an optional name for the getter/setter
-  // and defaults to the keyName minus the last two characters so it turns
-  // 'propertyId' to 'property'.
+  // call this method with the following arguments
+  //
+  //  * typeName: the type name (class name)
+  //  * keyName: the name of the property that holds the key reference(s)
+  //      the key itself can be a single value or an array of values
+  //  * serviceName: the related service name,
+  //  * propertyTypeName: the referenced type.
+  //  * propertyName: an optional name for the getter/setter defaults to
+  //        the keyName minus the last two characters so it turns
+  //        'propertyId' to 'property'.
+  //
+  //   NOTE: if your keyname is `propertyIds` you should provide a propertyName
+  //     otherwise your property name will be `propertyI` when you
+  //     probably want `properties`
 
   _createClass(ReferentialDataService, [{
     key: 'registerReference',
@@ -323,6 +323,9 @@ var ReferentialDataService = (function () {
 
       // Add the actual getter/setter properties to the class instance
       var referenceNames = Object.keys(type);
+      //initialize a lookup table for use later.
+      obj._rdsReferences = {};
+
       referenceNames.forEach(function (referenceName) {
         if (referenceName !== '_typeName') {
           var reference = type[referenceName];
@@ -334,6 +337,8 @@ var ReferentialDataService = (function () {
             }
           }
           Object.defineProperty(obj, reference.propertyName, reference.property);
+          //create a lookup on the object for use later when executing the query plan
+          obj._rdsReferences[reference.propertyName] = reference.keyName;
         }
       });
     }
@@ -362,13 +367,14 @@ var ReferentialDataService = (function () {
     //   site.grantee.region (RegionService)
     //   site.grantee.region.administrator (AccountService)
     //   classType (ClassTypeService)
+    //   classRooms (ClassRoomService)
     //
     //
-    // This should result in five queries, one for each of the entities: Class,
-    // Site, Region, ClassType, and Account. The should be executed in the
-    // following order with the entities in [] executed in parallel:
+    // This should result in six queries, one for each of the entities: Class,
+    // ClassRooms, Site, Region, ClassType, and Account. The should be executed
+    // in the following order with the entities in [] executed in parallel:
     //
-    //   Class (Already queried) -> [Site, ClassType], Region, Account
+    //   Class (Already queried) -> [ClassRoom, Site, ClassType], Region, Account
     //
     // Loop over the tree and get the service types. For each type, determine the
     // maximum depth, the number of '.' in the path. Order the entities by depth.
@@ -389,6 +395,14 @@ var ReferentialDataService = (function () {
     //       serviceName: 'classTypeService',
     //       paths: [
     //          'classType'
+    //       ],
+    //       depth: 1
+    //     },
+    //     {
+    //       entity: 'ClassRoom',
+    //       serviceName: 'classRoomService',
+    //       paths: [
+    //          'classRooms'
     //       ],
     //       depth: 1
     //     },
@@ -435,6 +449,7 @@ var ReferentialDataService = (function () {
     //   site.grantee.region (RegionService)
     //   site.grantee.region.administrator (AccountService)
     //   classType (ClassTypeService)
+    //   classRooms (ClassRoomService)
     //
     // It returns a plan that can be used to execute
   }, {

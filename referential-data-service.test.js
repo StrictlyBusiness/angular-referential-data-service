@@ -52,7 +52,7 @@ describe('ReferentialDataService', function() {
       referentialDataService.registerReference('Grantee', 'administratorId', 'accountService', 'Account');
       referentialDataService.registerReference('Grantee', 'regionId', 'regionService', 'Region');
       referentialDataService.registerReference('Region', 'administratorId', 'accountService', 'Account');
-      referentialDataService.registerReference('Class','classRoomIds', 'classRoomService', 'ClassRooms', 'classRooms');
+      referentialDataService.registerReference('Class','classRoomIds', 'classRoomService', 'ClassRoom', 'classRooms');
 
       let plan = referentialDataService.buildQueryPlan('Class', [
         'site',
@@ -66,7 +66,7 @@ describe('ReferentialDataService', function() {
 
       let expected = {
         steps: [
-          getPlanStep('ClassRooms', { name: 'classRoomService'}, ['classRooms'], 1),
+          getPlanStep('ClassRoom', { name: 'classRoomService'}, ['classRooms'], 1),
           getPlanStep('ClassType', { name: 'classTypeService' }, [ 'classType' ], 1),
           getPlanStep('Site', { name: 'siteService' }, [ 'site' ], 1),
           getPlanStep('Grantee', { name: 'granteeService' }, [ 'site.grantee' ], 2),
@@ -104,6 +104,7 @@ describe('ReferentialDataService', function() {
 
       referentialDataService.registerReference('Class', 'siteId', 'siteService', 'Site');
       referentialDataService.registerReference('Site', 'granteeId', 'granteeService', 'Grantee');
+      
 
       let classes = [
         new Class({ classId: 100, siteId: 200 }, referentialDataService),
@@ -111,10 +112,13 @@ describe('ReferentialDataService', function() {
         new Class({ classId: 102, siteId: 202 }, referentialDataService),
         new Class({ classId: 103, siteId: 202 }, referentialDataService)
       ];
+
       let site = new Site({ siteId: 200, granteeId: 300 }, referentialDataService);
       cacheService.set(site.typeName, site.key, site);
+      
       site = new Site({ siteId: 201, granteeId: 300 }, referentialDataService);
       cacheService.set(site.typeName, site.key, site);
+      
       site = new Site({ siteId: 202, granteeId: 301 }, referentialDataService);
       cacheService.set(site.typeName, site.key, site);
 
@@ -126,6 +130,38 @@ describe('ReferentialDataService', function() {
       expect(actual).to.deep.equal([ 300, 301 ]);
 
     });
+
+    it('should return all classRoom ids', function() {
+
+      let cacheService = new CacheService();
+
+      let classRoomService = { get: function(id) { return cacheService.get('ClassRoom', id); }};
+
+      $injector.get = function(serviceName) {
+        if (serviceName == 'classRoomService') {
+          return classRoomService;
+        }
+      }
+
+      referentialDataService.registerReference('Class','classRoomIds', 'classRoomService', 'ClassRoom', 'classRooms');
+      
+
+      let classes = [
+        new Class({  classRoomIds: [10,20,30] }, referentialDataService),
+        new Class({  classRoomIds: [40,70] }, referentialDataService),
+        new Class({  classRoomIds: [50,80] }, referentialDataService),
+        new Class({  classRoomIds: [60,90,55, 57] }, referentialDataService)
+      ];
+
+
+      /* making sure a group of ids returns the correct concatenated array */
+      let planStep = getPlanStep('ClassRoom', classRoomService, [ 'classRooms' ], 1);
+      let actual = planStep.getPropertyValues(classes, planStep);
+      expect(actual).to.deep.equal([ 10, 20, 30, 40, 70, 50, 80, 60, 90, 55, 57 ]);
+
+
+    });
+
 
   });
 
