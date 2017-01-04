@@ -4,6 +4,7 @@ import ReferentialDataService, { Plan, PlanStep } from './referential-data-servi
 import CacheService from 'angular-cache-service';
 import Class from './test-models/class';
 import Site from './test-models/site';
+import ClassRoom from './test-models/class-room';
 
 
 function getPlanStep(entity, service, paths, depth) {
@@ -122,9 +123,6 @@ describe('ReferentialDataService', function() {
       site = new Site({ siteId: 202, granteeId: 301 }, referentialDataService);
       cacheService.set(site.typeName, site.key, site);
 
-      // Force service injection
-      //referentialDataService.getReferenceForPropertyChain('Class', 'site.grantee');
-
       let planStep = getPlanStep('Grantee', granteeService, [ 'site.grantee' ], 1);
       let actual = planStep.getPropertyValues(classes, planStep);
       expect(actual).to.deep.equal([ 300, 301 ]);
@@ -161,6 +159,54 @@ describe('ReferentialDataService', function() {
 
 
     });
+
+/*
+
+NOT sure how to set this test up so that it actually returns the class rooms so commented out for now
+    it('should return all student ids', function() {
+
+      let cacheService = new CacheService();
+
+      let classRoomService = { get: function(id) { return cacheService.get('ClassRoom', id); }};
+      let studentService = { get: function(id) { return cacheService.get('Student', id); }};
+
+      $injector.get = function(serviceName) {
+        if (serviceName == 'classRoomService') {
+          return classRoomService;
+        }
+        if (serviceName == 'studentService') {
+          return studentService;
+        }
+      }
+
+      referentialDataService.registerReference('Class','classRoomIds', 'classRoomService', 'ClassRoom', 'classRooms');
+      referentialDataService.registerReference('ClassRoom', 'studentId', 'studentService', 'Student');
+      
+      let classes = [
+        new Class({  classId: 1, classRoomIds: [10,20,30] }, referentialDataService),
+        new Class({  classId: 2, classRoomIds: [40,20] }, referentialDataService),
+      ];
+
+      let classRoom = new ClassRoom({ classRoomId:10, studentId: 300 }, referentialDataService);
+      cacheService.set(classRoom.typeName, classRoom.key, classRoom);
+
+      classRoom = new ClassRoom({ classRoomId:20, studentId: 300 }, referentialDataService);
+      cacheService.set(classRoom.typeName, classRoom.key, classRoom);
+
+      classRoom = new ClassRoom({ classRoomId:30, studentId: 400 }, referentialDataService);
+      cacheService.set(classRoom.typeName, classRoom.key, classRoom);
+
+      classRoom = new ClassRoom({ classRoomId:40, studentId: 500 }, referentialDataService);
+      cacheService.set(classRoom.typeName, classRoom.key, classRoom);
+
+
+      let planStep = getPlanStep('Student', studentService, [ 'classRooms.student' ], 1);
+      let actual = planStep.getPropertyValues(classes, planStep);
+      expect(actual).to.deep.equal([ 300, 400, 500 ]);
+
+    });
+*/
+
 
 
   });
