@@ -174,6 +174,7 @@ var PlanStep = (function () {
   }, {
     key: 'collectPropertyValues',
     value: function collectPropertyValues(item, propertyChain, ids) {
+      var _this3 = this;
 
       // Get the property we are extracting and update the property chain to
       // exclude the property we are currently processing.
@@ -183,6 +184,7 @@ var PlanStep = (function () {
       // If the propertyChain is empty, we know we are at the place we need to
       // collect the value.
       if (propertyChain.length === 0) {
+
         // Get the key from the lookup table
         var key = item._rdsReferences[property];
         // attempt to get the corresponding value
@@ -202,10 +204,17 @@ var PlanStep = (function () {
       } else {
         // Get the property value from the getter/setter
         var value = item[property];
+
         // Only process values that are defined
         if (value !== null && !_lodash2['default'].isUndefined(value)) {
           // If we are not at the property yet, keep traversing
-          this.collectPropertyValues(value, propertyChain, ids);
+          if (Array.isArray(value)) {
+            value.forEach(function (val) {
+              _this3.collectPropertyValues(val, propertyChain, ids);
+            });
+          } else {
+            this.collectPropertyValues(value, propertyChain, ids);
+          }
         }
       }
     }
@@ -312,7 +321,7 @@ var ReferentialDataService = (function () {
   }, {
     key: 'configureClass',
     value: function configureClass(typeName, obj) {
-      var _this3 = this;
+      var _this4 = this;
 
       // Get the references for the type. If there are no references for the
       // type, just return.
@@ -331,7 +340,7 @@ var ReferentialDataService = (function () {
           var reference = type[referenceName];
           // Ensure the service instance is injected
           if (!reference.service) {
-            reference.service = _this3.$injector.get(reference.serviceName);
+            reference.service = _this4.$injector.get(reference.serviceName);
             if (!reference.service) {
               throw new Error('The reference property ' + reference.propertyName + ' on ' + typeName + '\n              requires service {$reference.serviceName} but it was not found');
             }
@@ -455,7 +464,7 @@ var ReferentialDataService = (function () {
   }, {
     key: 'buildQueryPlan',
     value: function buildQueryPlan(rootType, propertyList) {
-      var _this4 = this;
+      var _this5 = this;
 
       var plan = new Plan();
 
@@ -468,7 +477,7 @@ var ReferentialDataService = (function () {
         for (var i = 0; i < propertyChain.length; i++) {
           var currentProperty = propertyChain.slice(0, i + 1).join('.');
           // Follow the path and find the type at the end
-          var reference = _this4.getReferenceForPropertyChain(rootType, currentProperty);
+          var reference = _this5.getReferenceForPropertyChain(rootType, currentProperty);
           // Add the plan step
           plan.addStepForProperty(reference.propertyTypeName, reference.service, currentProperty);
         }
@@ -513,7 +522,7 @@ var ReferentialDataService = (function () {
   }, {
     key: 'getReferenceForPropertyChain',
     value: function getReferenceForPropertyChain(type, property) {
-      var _this5 = this;
+      var _this6 = this;
 
       // Split the path by the '.' characters into an array
       var propertyChain = property.split('.');
@@ -521,9 +530,9 @@ var ReferentialDataService = (function () {
       var propertyReference = null;
       propertyChain.forEach(function (p) {
         // Get the current type's references
-        var typeReferences = _this5.getTypeReferences(type);
+        var typeReferences = _this6.getTypeReferences(type);
         // Get the reference for the next property on the current type
-        propertyReference = _this5.getPropertyReference(typeReferences, p);
+        propertyReference = _this6.getPropertyReference(typeReferences, p);
         // Use the reference to get the referenced key's type and service
         type = propertyReference.propertyTypeName;
       });

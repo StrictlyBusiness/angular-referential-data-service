@@ -143,6 +143,7 @@ export class PlanStep {
     // If the propertyChain is empty, we know we are at the place we need to
     // collect the value.
     if (propertyChain.length === 0) {
+
       // Get the key from the lookup table
       let key = item._rdsReferences[property];
       // attempt to get the corresponding value
@@ -162,10 +163,18 @@ export class PlanStep {
     } else {
       // Get the property value from the getter/setter
       let value = item[property];
+
       // Only process values that are defined
       if (value !== null && !_.isUndefined(value)) {
         // If we are not at the property yet, keep traversing
-        this.collectPropertyValues(value, propertyChain, ids);
+        if(Array.isArray(value)){
+          value.forEach((val) => {
+            this.collectPropertyValues(val, propertyChain, ids);
+          });
+
+        } else {
+          this.collectPropertyValues(value, propertyChain, ids);
+        }
       }
     }
   }
