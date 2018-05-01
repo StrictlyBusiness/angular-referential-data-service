@@ -1,6 +1,6 @@
 {
   "name": "angular-referential-data-service",
-  "version": "1.0.10",
+  "version": "1.1.0",
   "description": "AngularJS Service for loading referential data via a webservice",
   "main": "dist/referential-data-service.js",
   "scripts": {
