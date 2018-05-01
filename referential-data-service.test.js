@@ -6,7 +6,6 @@ import Class from './test-models/class';
 import Site from './test-models/site';
 import ClassRoom from './test-models/class-room';
 
-
 function getPlanStep(entity, service, paths, depth) {
   let planStep = new PlanStep(entity, service);
   planStep.paths = paths;
@@ -35,12 +34,15 @@ describe('ReferentialDataService', function() {
 
       let plan = referentialDataService.buildQueryPlan('Class', ['site']);
 
-      let expected = {
-        steps: [
+      let expectedPlan = new Plan();
+
+      expectedPlan.steps.push(
           getPlanStep('Site', { name: 'siteService' }, [ 'site' ], 1)
-        ]
-      };
-      expect(plan).to.deep.equal(expected);
+      );
+
+      plan.should.deepEqual(expectedPlan);
+
+      //expect(plan).to.deep.equal(expectedPlan);
     });
 
     it('should build a complicated query plan', function() {
@@ -65,8 +67,9 @@ describe('ReferentialDataService', function() {
         'classRooms'
       ]);
 
-      let expected = {
-        steps: [
+      let expectedPlan = new Plan();
+
+      let steps = [
           getPlanStep('ClassRoom', { name: 'classRoomService'}, ['classRooms'], 1),
           getPlanStep('ClassType', { name: 'classTypeService' }, [ 'classType' ], 1),
           getPlanStep('Site', { name: 'siteService' }, [ 'site' ], 1),
@@ -79,8 +82,9 @@ describe('ReferentialDataService', function() {
             ], 4)
 
         ]
-      };
-      expect(plan).to.deep.equal(expected);
+      ;
+      expectedPlan.steps = steps;
+      plan.should.deepEqual(expectedPlan);
     });
 
   });
@@ -125,7 +129,7 @@ describe('ReferentialDataService', function() {
 
       let planStep = getPlanStep('Grantee', granteeService, [ 'site.grantee' ], 1);
       let actual = planStep.getPropertyValues(classes, planStep);
-      expect(actual).to.deep.equal([ 300, 301 ]);
+      actual.should.deepEqual([ 300, 301 ]);
 
     });
 
@@ -155,7 +159,7 @@ describe('ReferentialDataService', function() {
       /* making sure a group of ids returns the correct concatenated array */
       let planStep = getPlanStep('ClassRoom', classRoomService, [ 'classRooms' ], 1);
       let actual = planStep.getPropertyValues(classes, planStep);
-      expect(actual).to.deep.equal([ 10, 20, 30, 40, 70, 50, 80, 60, 90, 55, 57 ]);
+      actual.should.deepEqual([ 10, 20, 30, 40, 70, 50, 80, 60, 90, 55, 57 ]);
 
 
     });

@@ -17,7 +17,7 @@ export class Plan {
     let propertyChain = property.split('.');
 
     // See if a plan step exists for this entity
-    let planStep = _.find(this.steps, 'entity', entityName);
+    let planStep = _.find(this.steps, ['entity', entityName]);
 
     // If we didnt find one, create one and add it
     if (!planStep) {
@@ -34,7 +34,7 @@ export class Plan {
     planStep.depth = Math.max(planStep.depth, propertyChain.length);
 
     // ensure they are sorted
-    this.steps = _.sortByAll(this.steps, ['depth', 'entity']);
+    this.steps = _.sortBy(this.steps, ['depth', 'entity']);
   }
 
   findStepsForDepth(depth) {

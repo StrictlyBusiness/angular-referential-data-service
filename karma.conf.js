@@ -5,25 +5,15 @@ module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: '.',
 
     // we need this to override the way base is in config.js in order for our
     // tests to load properly within Karma runner which uses base instead of /
     // as the baseURL
-    proxies: {
-      '/' : '/base'
-    },
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jspm', 'mocha', 'sinon-chai'],
-
-
-    // list of files / patterns to load in the browser
-    //files: [
-    //  'build/js/**/*.js',
-    //  'test/**/*.js'
-    //],
+    frameworks: ['jspm', 'mocha', 'should'],
 
     jspm: {
         config: 'config.js',

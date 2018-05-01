@@ -16,7 +16,6 @@ var babel = require("gulp-babel");
 var argv = require('minimist')(process.argv.slice(2));
 var COLORS = require('ansi-colors');
 var log = require('fancy-log');
-var templateUtil = require('lodash.template');
 var runSequence = require('run-sequence');
 var exec = require('child_process').exec;
 //=============================================
