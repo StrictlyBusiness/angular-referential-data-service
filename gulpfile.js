@@ -84,6 +84,18 @@ gulp.task('test:unit', function(cb) {
 });
 
 
+gulp.task("bundleDirective", function () {
+  return gulp.src("*-directive.js")
+      .pipe(babel())
+      .pipe(gulp.dest("dist"));
+});
+
+gulp.task("bundleModule", function () {
+  return gulp.src("*-module.js")
+      .pipe(babel())
+      .pipe(gulp.dest("dist"));
+});
+
 
 gulp.task('build:jspmconfig', function (cb) {
   exec("node ./node_modules/jspm/jspm.js config registries.github.timeouts.lookup 360", function(err, stdout, stderr) {
@@ -133,7 +145,5 @@ gulp.task('install', function (cb) {
 
 
 gulp.task("compile", function () {
-  return gulp.src("*-service.js")
-    .pipe(babel())
-    .pipe(gulp.dest("dist"));
+  runSequence(['bundleDirective', 'bundleModule']);
 });

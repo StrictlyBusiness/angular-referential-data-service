@@ -43,7 +43,7 @@
   "jspm": {
     "dependencies": {
       "angular": "github:angular/bower-angular@^1.6.10",
-      "angular-cache-service": "github:StrictlyBusiness/angular-cache-service@^1.0.2",
+      "angular-cache-service": "github:StrictlyBusiness/angular-cache-service@^1.0.3",
       "angular-sanitize": "github:angular/bower-angular-sanitize@^1.6.10",
       "bluebird": "npm:bluebird@^3.5.1",
       "lodash": "npm:lodash@^4.17.10"
